@@ -1,0 +1,148 @@
+__author__ = 'alfath.info'
+
+class Graph :
+    def __init__(self,X,U):
+
+        self.X=X #ensemble Sommets
+        self.U=U #ensemble daretes
+
+    # u est une arete ()
+    # I(u) return extremitee initial de larete u
+    def I(self,u):
+        if u in self.U:
+            return u[0]
+
+    # T(u) return extrimite terminal de larete u
+    def T(self,u):
+        if u in self.U:
+            return u[1]
+    
+    #return lordre dun graph ce qui est le nombre de sommets
+    def Ordre(self):
+        return len(self.X)
+    #return le degree d'un graph ce qui est equivalent a (2 * le nombre d'arete)
+    def graphDegree(self):
+        return (2 * len(self.U))
+    
+    #Degree x return le degree Complet d'un sommet
+    def fullDegree(self,x):
+        degree = 0
+        if x in self.X :
+            for u in self.U:
+                degree += u.count(x)
+        return degree
+
+    def Examine(self,exam,X):
+        set1 = set(filter(lambda x : exam[x] == False ,exam))
+        list1 = list(set1 & X)
+        if(list1):
+            return list1[0]
+        return False
+    
+    def isRegular(self):
+        degreeSet= (set(map(lambda x : self.fullDegree(x),self.X)))
+        return True if(len(degreeSet)) == 1 else False
+    '''
+    #@brief Calcule touts les compasantes Fconnexe
+    #@return tableau contenant tout les composantes Fconnexe
+    #
+    '''
+    def fConnexeAll(self):
+        x = self.X
+        composanteFConnexe=[]
+        while x :
+            Xa = self.fConnexe(list(x)[0])
+            x = x - Xa
+            composanteFConnexe.append(Xa)
+        return composanteFConnexe
+class GraphNO(Graph):
+    
+    '''
+    #@brief Composante connexe Contenant x
+    #@param x sommet de Graph
+    #@return Composante Fconnexe Contenant x
+    '''
+    def fConnexe(self, x):
+        if x not in self.X:
+            return None
+        examined = self.X
+        Xplus  = {x}
+        examined ={}
+
+        #rendre les sommet a faux
+        for i in self.X:
+            examined.update({i: False})
+        #fin
+
+        while x :
+            examined[x] = True
+            for u in self.U:
+                if( self.I(u) == x and self.T(u) not in Xplus):
+                    Xplus.add(self.T(u))
+            x = self.Examine(examined,Xplus)
+
+        
+        return (Xplus)
+'''
+#class GraphOR :
+# c'est une class didiee au Graph Orientee
+'''
+class GraphOR(Graph):
+    #DemiDegreeExterieur + : return le demi degree exterieur d'un sommet
+    #DemiDegreeInterieur - : return le demi degree interieur d'un sommet
+    def demiDegree(self,type,x):
+        degreeExterieure = 0
+        if(type == "-"):
+            for u in self.U:
+                if x == self.T(u):
+                    degreeExterieure += 1
+        elif(type == "+"):
+            for u in self.U:
+                if x == self.I(u):
+                    degreeExterieure += 1
+        return degreeExterieure
+    
+    def fConnexe(self, x):
+        if x not in self.X:
+            return None
+        examined = self.X
+        Xminus = {x}
+        Xplus  = {x}
+        examined ={}
+
+        #rendre les sommet a faux
+        for i in self.X:
+            examined.update({i: False})
+        #fin
+
+
+        y = x
+        while x :
+            examined[x] = True
+            for u in self.U:
+                if( self.I(u) == x and self.T(u) not in Xplus):
+                    Xplus.add(self.T(u))
+            x = self.Examine(examined,Xplus)
+
+        #rendre les sommet a faux
+        for i in self.X:
+            examined.update({i: False})
+        #fin
+        x = y
+        while x :
+            examined[x] = True
+            for u in self.U:
+                if( self.T(u) == x and (self.I(u) not in Xminus)):
+                    Xminus.add(self.I(u))
+            x = self.Examine(examined,Xminus)
+
+        return (Xminus&Xplus)
+GOR= GraphOR({1,2,3},{(1,2),(2,3),(3,1)})
+GNO= GraphNO({1,2,3,4,5},{(1,2),(1,3),(4,5)})
+
+
+
+
+
+
+
