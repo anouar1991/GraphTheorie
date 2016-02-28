@@ -1,4 +1,4 @@
-__author__ = 'alfath.info'
+__author__ = 'Noreddine Belhadj-Cheikh'
 
 class Graph :
     def __init__(self,X,U):
@@ -137,9 +137,16 @@ class GraphOR(Graph):
             x = self.Examine(examined,Xminus)
 
         return (Xminus&Xplus)
-GOR= GraphOR({1,2,3},{(1,2),(2,3),(3,1)})
-GNO= GraphNO({1,2,3,4,5},{(1,2),(1,3),(4,5)})
 
+#Example d'un graphe oriente
+X = {1,2,3} #ensemble des sommets
+U = {(1,2),(2,3),(3,1)} #ensemble des Arcs
+GOR= GraphOR(X,U)   #GOR : GraphORiente
+#Example d'un graphe non oriente
+E = {1,2,3} #ensemble des sommets
+A = {(1,2),(2,3),(3,1)} #ensemble des Aretes
+GNO= GraphNO(E,A)   #GNO : GraphNonOriente 
+#
 
 
 
